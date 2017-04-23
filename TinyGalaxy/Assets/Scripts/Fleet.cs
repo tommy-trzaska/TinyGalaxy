@@ -50,6 +50,25 @@ public class Fleet : MonoBehaviour {
         }
     }
 
+    //Battle against other fleet
+    void Combat(Fleet defendingFleet)
+    {
+        if (units > defendingFleet.units)
+        {
+            units -= defendingFleet.units;
+            Destroy(defendingFleet.gameObject);
+        }
+        else
+        {
+            if(units == defendingFleet.units)
+                Destroy(defendingFleet.gameObject);
+
+            defendingFleet.units -= units; 
+            Destroy(gameObject);
+        }
+
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.GetComponent<Planet>())
@@ -64,6 +83,14 @@ public class Fleet : MonoBehaviour {
 
                 other.GetComponent<Planet>().UpdateText();
                 Destroy(gameObject);
+            }
+        }
+
+        if (other.GetComponent<Fleet>())
+        {
+            if (other.GetComponent<Fleet>().owner != owner)
+            {
+                Combat(other.GetComponent<Fleet>());
             }
         }
     }
