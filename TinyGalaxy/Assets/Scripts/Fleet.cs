@@ -6,6 +6,7 @@ public class Fleet : MonoBehaviour {
 
     public int units = 10;
     public Planet target;
+    public Player owner;
     public float speed = 5;
 
     private TextMesh unitInfo;
@@ -21,11 +22,12 @@ public class Fleet : MonoBehaviour {
         transform.Translate(direction * speed * Time.deltaTime);
     }
 
-    public void CreateFleet (int fleetSize, Color ownerColor, Vector3 fleetOrigin, Transform fleetTarget)
+    public void CreateFleet (int fleetSize, Player commander, Vector3 fleetOrigin, Transform fleetTarget)
     {
         units = fleetSize;
         unitInfo.text = units.ToString();
-        GetComponent<Renderer>().material.color = ownerColor;
+        owner = commander;
+        GetComponent<Renderer>().material.color = commander.playerColor;
 
         target = fleetTarget.GetComponent<Planet>();
 
@@ -39,6 +41,10 @@ public class Fleet : MonoBehaviour {
         {
             if(other.GetComponent<Planet>() == target)
             {
+                if (!GameManager.instance.players.Contains(other.GetComponent<Planet>().owner))
+                    other.GetComponent<Planet>().SetNewOwner(owner);
+                //TODO: Combat
+
                 other.GetComponent<Planet>().units += units;
                 other.GetComponent<Planet>().UpdateText();
                 Destroy(gameObject);

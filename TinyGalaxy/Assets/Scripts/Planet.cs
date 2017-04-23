@@ -9,7 +9,7 @@ public class Planet : MonoBehaviour {
     public int productionLevel = 1;
     public int defenceLevel = 1;
 
-    public Player owner;
+    public Player owner = null;
     public List<Planet> connections;
     public GameObject fleetPrefab;
 
@@ -43,7 +43,7 @@ public class Planet : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
-        if(Physics.Raycast(ray, out hit, 100.0f))
+        if(Physics.Raycast(ray, out hit, 100.0f) && GameManager.instance.players.Contains(owner))
         {
             if(hit.collider.gameObject.GetComponent<Planet>())
             {
@@ -54,18 +54,18 @@ public class Planet : MonoBehaviour {
                     int unitsToSend = units / 2;
 
                     GameObject newFleet = Instantiate(fleetPrefab);
-                    newFleet.GetComponent<Fleet>().CreateFleet(unitsToSend, owner.playerColor, transform.position, hitPlanet.transform);
+                    newFleet.GetComponent<Fleet>().CreateFleet(unitsToSend, owner, transform.position, hitPlanet.transform);
 
                     units -= unitsToSend;
                     UpdateText();
+
+                    GameManager.instance.highlightedPlanet = null;
+                    DehighlightPlanet();
                 }
             }
         }
 
         GameManager.instance.pointerHold = false;
-
-        GameManager.instance.highlightedPlanet = null;
-        DehighlightPlanet();
     }
 
     IEnumerator UnitProduction()
