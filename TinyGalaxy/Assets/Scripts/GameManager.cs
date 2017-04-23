@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance;
 
     public Planet highlightedPlanet;
+    public bool pointerHold = false;
 
 	void Awake ()
     {

@@ -9,6 +9,9 @@ public class Planet : MonoBehaviour {
     public int productionLevel = 1;
     public int defenceLevel = 1;
 
+    public List<Planet> connections;
+    public GameObject fleetPrefab;
+
     private TextMesh unitInfo;
     private Material planetMaterial;
     private Color planetColor;
@@ -25,7 +28,7 @@ public class Planet : MonoBehaviour {
     {
         while (true)
         {
-            unitInfo.text = units.ToString();
+            UpdateText();
 
             if (units <= 99)
                 units++;
@@ -40,7 +43,46 @@ public class Planet : MonoBehaviour {
             GameManager.instance.highlightedPlanet.DehighlightPlanet();
 
         GameManager.instance.highlightedPlanet = this;
+        GameManager.instance.pointerHold = true;
         HighlightPlanet();
+    }
+
+    private void OnMouseUp()
+    {
+        if (!GameManager.instance.pointerHold)
+            return;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if(Physics.Raycast(ray, out hit, 100.0f))
+        {
+            if(hit.collider.gameObject.GetComponent<Planet>())
+            {
+                Planet hitPlanet = hit.collider.gameObject.GetComponent<Planet>();
+
+                if(connections.Contains(hitPlanet))
+                {
+                    int unitsToSend = units / 2;
+
+                    GameObject newFleet = Instantiate(fleetPrefab);
+                    newFleet.GetComponent<Fleet>().CreateFleet(unitsToSend, transform.position, hitPlanet.transform);
+
+                    units -= unitsToSend;
+                    UpdateText();
+                }
+            }
+        }
+
+        GameManager.instance.pointerHold = false;
+
+        GameManager.instance.highlightedPlanet = null;
+        DehighlightPlanet();
+    }
+
+    public void UpdateText ()
+    {
+        unitInfo.text = units.ToString();
     }
 
     void HighlightPlanet ()
