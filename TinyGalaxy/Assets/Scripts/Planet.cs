@@ -11,11 +11,13 @@ public class Planet : MonoBehaviour {
 
     private TextMesh unitInfo;
     private Material planetMaterial;
+    private Color planetColor;
 
     private void Awake()
     {
         unitInfo = transform.GetChild(0).GetComponent<TextMesh>();
         planetMaterial = gameObject.GetComponent<Renderer>().material;
+        planetColor = planetMaterial.color;
         StartCoroutine(UnitProduction());
     }
 
@@ -43,11 +45,11 @@ public class Planet : MonoBehaviour {
 
     void HighlightPlanet ()
     {
-        planetMaterial.SetColor("_EmissionColor", Color.yellow);
+        planetMaterial.SetColor("_SpecColor", new Color(1.0f, 1.0f, 100.0f/256.0f) * planetColor);
     }
 
     public void DehighlightPlanet ()
     {
-        planetMaterial.SetColor("_EmissionColor", Color.black);
+        planetMaterial.SetColor("_SpecColor", Color.black);
     }
 }

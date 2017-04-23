@@ -2,3 +2,6 @@ TinyGalaxy/Library/
 TinyGalaxy/Temp/
 TinyGalaxy/TinyGalaxy.csproj
 TinyGalaxy/TinyGalaxy.sln
+TinyGalaxy/TinyGalaxy.Editor.Plugins.csproj
+TinyGalaxy/TinyGalaxy.Editor.csproj
+TinyGalaxy/TinyGalaxy.Plugins.csproj
