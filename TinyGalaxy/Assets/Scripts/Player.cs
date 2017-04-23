@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Player
 {
+    public string name;
     public Color playerColor;
     public List<Planet> ownedPlanets = new List<Planet>();
 }

@@ -41,6 +41,7 @@ public class Fleet : MonoBehaviour {
         if(units > planetAttacked.units)
         {
             planetAttacked.SetNewOwner(owner);
+            GameManager.instance.CheckPlayersAlive();
             units -= planetAttacked.units;
             planetAttacked.units = units;
         }
