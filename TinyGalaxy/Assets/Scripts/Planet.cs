@@ -9,32 +9,20 @@ public class Planet : MonoBehaviour {
     public int productionLevel = 1;
     public int defenceLevel = 1;
 
+    public Player owner;
     public List<Planet> connections;
     public GameObject fleetPrefab;
 
     private TextMesh unitInfo;
     private Material planetMaterial;
     private Color planetColor;
+    private bool producingUnits = false;
 
     private void Awake()
     {
         unitInfo = transform.GetChild(0).GetComponent<TextMesh>();
         planetMaterial = gameObject.GetComponent<Renderer>().material;
         planetColor = planetMaterial.color;
-        StartCoroutine(UnitProduction());
-    }
-
-    IEnumerator UnitProduction ()
-    {
-        while (true)
-        {
-            UpdateText();
-
-            if (units <= 99)
-                units++;
-
-            yield return new WaitForSeconds(3f / (float)productionLevel);
-        }
     }
 
     private void OnMouseDown()
@@ -66,7 +54,7 @@ public class Planet : MonoBehaviour {
                     int unitsToSend = units / 2;
 
                     GameObject newFleet = Instantiate(fleetPrefab);
-                    newFleet.GetComponent<Fleet>().CreateFleet(unitsToSend, transform.position, hitPlanet.transform);
+                    newFleet.GetComponent<Fleet>().CreateFleet(unitsToSend, owner.playerColor, transform.position, hitPlanet.transform);
 
                     units -= unitsToSend;
                     UpdateText();
@@ -78,6 +66,33 @@ public class Planet : MonoBehaviour {
 
         GameManager.instance.highlightedPlanet = null;
         DehighlightPlanet();
+    }
+
+    IEnumerator UnitProduction()
+    {
+        producingUnits = true;
+
+        while (true)
+        {
+            UpdateText();
+
+            if (units <= 99)
+                units++;
+
+            yield return new WaitForSeconds(3f / (float)productionLevel);
+        }
+    }
+
+    public void SetNewOwner (Player p)
+    {
+        p.ownedPlanets.Add(this);
+        owner = p;
+
+        planetColor = p.playerColor;
+        planetMaterial.color = planetColor;
+
+        if (!producingUnits)
+            StartCoroutine(UnitProduction());
     }
 
     public void UpdateText ()

@@ -21,10 +21,11 @@ public class Fleet : MonoBehaviour {
         transform.Translate(direction * speed * Time.deltaTime);
     }
 
-    public void CreateFleet (int fleetSize, Vector3 fleetOrigin, Transform fleetTarget)
+    public void CreateFleet (int fleetSize, Color ownerColor, Vector3 fleetOrigin, Transform fleetTarget)
     {
         units = fleetSize;
         unitInfo.text = units.ToString();
+        GetComponent<Renderer>().material.color = ownerColor;
 
         target = fleetTarget.GetComponent<Planet>();
 
