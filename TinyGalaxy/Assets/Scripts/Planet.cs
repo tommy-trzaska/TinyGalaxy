@@ -85,6 +85,9 @@ public class Planet : MonoBehaviour {
 
     public void SetNewOwner (Player p)
     {
+        if (owner.ownedPlanets.Count > 0)
+            owner.ownedPlanets.Remove(this);
+
         p.ownedPlanets.Add(this);
         owner = p;
 

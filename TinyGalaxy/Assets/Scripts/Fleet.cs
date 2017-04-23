@@ -35,17 +35,33 @@ public class Fleet : MonoBehaviour {
         direction = (fleetTarget.position - fleetOrigin).normalized;
     }
 
+    //Battle against planet
+    void Combat (Planet planetAttacked)
+    {
+        if(units > planetAttacked.units)
+        {
+            planetAttacked.SetNewOwner(owner);
+            units -= planetAttacked.units;
+            planetAttacked.units = units;
+        }
+        else
+        {
+            planetAttacked.units -= units;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.GetComponent<Planet>())
         {
             if(other.GetComponent<Planet>() == target)
             {
-                if (!GameManager.instance.players.Contains(other.GetComponent<Planet>().owner))
-                    other.GetComponent<Planet>().SetNewOwner(owner);
-                //TODO: Combat
+                if (other.GetComponent<Planet>().owner != owner)
+                    Combat(other.GetComponent<Planet>());
 
-                other.GetComponent<Planet>().units += units;
+                if(other.GetComponent<Planet>().owner == owner)
+                    other.GetComponent<Planet>().units += units;
+
                 other.GetComponent<Planet>().UpdateText();
                 Destroy(gameObject);
             }
